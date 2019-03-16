@@ -66,14 +66,14 @@ public class RestApiController {
 
 
 
-            log.info("Request for animal with id " + id);
+            log.info("Request to show animal with id " + id);
         Animal animal = animalRepository.getOne(id);
         if(animal != null) {
             return assembler.toResource(animalRepository.getOne(id));
         } else throw new AnimalNotFoundException("There is no animal with id: " + id);
     }
 
-    @PostMapping(value = "/animals")
+    @PostMapping("/animals")
     public ResponseEntity<?> createAnimal(@RequestBody Animal animal) throws URISyntaxException{
         if (animalRepository.findByName(animal.getName()) != null) {
             log.info("Creation failed: animal already exists.");
@@ -87,11 +87,29 @@ public class RestApiController {
 
     @DeleteMapping("/animals/{id}")
     public void deleteAnimal(@PathVariable Long id){
+        log.info("Request to delete animal with id: " + id);
         if(animalRepository.findById(id).isPresent()){
             animalRepository.deleteById(id);
         } else throw new AnimalNotFoundException("There is no animal with id: " + id);
     }
 
-
+    @PutMapping("/animals/{id}")
+    public Animal updateAnimal(@RequestBody Animal newAnimal, @PathVariable Long id){
+        if(!animalRepository.findById(id).isPresent()){
+            log.info("Creation failed: animal not found.");
+            throw new AnimalNotFoundException("There is no animal with id: " + id);
+        } else {
+            log.info("Request to update animal with id: " + id);
+            return animalRepository.findById(id).map(animal -> {
+                animal.setName(newAnimal.getName());
+                animal.setColor(newAnimal.getColor());
+                animal.setFamily(newAnimal.getFamily());
+                return animalRepository.save(animal);
+            }).orElseGet(() -> {
+                newAnimal.setId(id);
+                return animalRepository.save(newAnimal);
+            });
+        }
+    }
 
 }
