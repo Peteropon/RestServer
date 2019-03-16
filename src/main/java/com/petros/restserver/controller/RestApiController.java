@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -59,17 +60,9 @@ public class RestApiController {
 
     @GetMapping(value = "/animals/{id}")
         public Resource<Animal> findById(@PathVariable Long id){
-//            Animal animal = animalRepository.getOne(id);
-//            if(animal == null) {
-//                return new ResponseEntity(new AnimalNotFoundException("Not fount"), HttpStatus.NOT_FOUND);
-//            }
-//            return new ResponseEntity<>(animal, HttpStatus.OK);
-
-
-
-            log.info("Request to show animal with id " + id);
-        Animal animal = animalRepository.getOne(id);
-        if(animal != null) {
+        log.info("Request to show animal with id " + id);
+        Optional<Animal> animal = animalRepository.findById(id);
+        if(animal.isPresent()) {
             return assembler.toResource(animalRepository.getOne(id));
         } else throw new AnimalNotFoundException("There is no animal with id: " + id);
     }
