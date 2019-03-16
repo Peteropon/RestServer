@@ -1,8 +1,8 @@
 package com.petros.restserver.util;
 
 public class AnimalNotFoundException extends RuntimeException {
-    public AnimalNotFoundException(String notFound){
-        super(notFound);
+    public AnimalNotFoundException(Long id){
+        super("Animal with id: " + id + " is not found.");
     }
 
 }

@@ -1,7 +1,11 @@
 package com.petros.restserver.model;
 
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.Data;
+import org.springframework.context.annotation.Bean;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;
@@ -10,18 +14,18 @@ import javax.persistence.Id;
 
 @Data
 @Entity
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Animal {
 
 
-    private @Id @GeneratedValue
+    public @Id @GeneratedValue
     Long id;
-    private String name;
-    private @Nullable String color;
-    private @Nullable String family;
+    public String name;
+    public @Nullable String color;
 
+    public @Nullable String family;
 
     public Animal(String name, String color, String family) {
-        this.id = id;
         this.name = name;
         this.color = color;
         this.family = family;
