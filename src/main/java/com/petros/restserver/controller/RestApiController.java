@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -110,6 +111,16 @@ public class RestApiController {
                 return animalRepository.save(newAnimal);
             });
         }
+    }
+
+    @GetMapping("/randomanimal")
+    public String random() {
+        log.info("Request for a random animal.");
+        int size = animalRepository.findAll().size();
+        Random random = new Random();
+        int randomNr = random.nextInt(size);
+        String randomName = animalRepository.findAll().get(randomNr).getName();
+        return "Here's a random animal from the database: " + randomName;
     }
 
 }
