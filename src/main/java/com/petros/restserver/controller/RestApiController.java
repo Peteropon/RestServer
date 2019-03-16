@@ -6,16 +6,19 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.petros.restserver.model.Animal;
 import com.petros.restserver.model.AnimalRepository;
 import com.petros.restserver.model.AnimalResourceAssembler;
+import com.petros.restserver.util.AnimalExistsException;
 import com.petros.restserver.util.AnimalNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,10 +70,19 @@ public class RestApiController {
         Animal animal = animalRepository.getOne(id);
         if(animal != null) {
             return assembler.toResource(animalRepository.getOne(id));
-        } else throw
-                new AnimalNotFoundException(id);
-
+        } else throw new AnimalNotFoundException("There is no animal with id: " + id);
     }
+
+    @PostMapping(value = "/animals")
+    public ResponseEntity<?> createAnimal(@RequestBody Animal animal) throws URISyntaxException{
+        log.info("Creating new animal: ", animal.getName());
+        if(animalRepository.existsById(animal.getId())){
+            throw  new AnimalExistsException("This animal already exists in the database.");
+        }
+        Resource<Animal> resource = assembler.toResource(animalRepository.save(animal));
+        return ResponseEntity.created(new URI(resource.getId().expand().getHref())).body(resource);
+    }
+
 
 
 }

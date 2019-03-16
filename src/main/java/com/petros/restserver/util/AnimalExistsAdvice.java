@@ -7,14 +7,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
-public class AnimalNotFoundAdvice {
-
-    @ExceptionHandler(AnimalNotFoundException.class)
+public class AnimalExistsAdvice {
+    @ExceptionHandler(AnimalExistsException.class)
     @ResponseBody
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String animalNotFoundHandler(AnimalNotFoundException exception){
-        return exception.getMessage();
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String animalExistsHandler(AnimalExistsException ae){
+        return ae.getMessage();
     }
-
-
 }
