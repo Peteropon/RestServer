@@ -75,12 +75,21 @@ public class RestApiController {
 
     @PostMapping(value = "/animals")
     public ResponseEntity<?> createAnimal(@RequestBody Animal animal) throws URISyntaxException{
-        log.info("Creating new animal: ", animal.getName());
-        if(animalRepository.existsById(animal.getId())){
-            throw  new AnimalExistsException("This animal already exists in the database.");
+        if (animalRepository.findByName(animal.getName()) != null) {
+            log.info("Creation failed: animal already exists.");
+            throw new AnimalExistsException("This animal already exists in the database.");
+        } else {
+            log.info("Creating new animal: {}", animal.getName().toUpperCase());
+            Resource<Animal> resource = assembler.toResource(animalRepository.save(animal));
+            return ResponseEntity.created(new URI(resource.getId().expand().getHref())).body(resource);
         }
-        Resource<Animal> resource = assembler.toResource(animalRepository.save(animal));
-        return ResponseEntity.created(new URI(resource.getId().expand().getHref())).body(resource);
+    }
+
+    @DeleteMapping("/animals/{id}")
+    public void deleteAnimal(@PathVariable Long id){
+        if(animalRepository.findById(id).isPresent()){
+            animalRepository.deleteById(id);
+        } else throw new AnimalNotFoundException("There is no animal with id: " + id);
     }
 
 
