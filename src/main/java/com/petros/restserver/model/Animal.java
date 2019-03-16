@@ -1,12 +1,26 @@
 package com.petros.restserver.model;
 
+
+import lombok.Data;
+import org.springframework.lang.Nullable;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Data
+@Entity
 public class Animal {
 
-    private Long id;
-    private String name;
-    private String color;
 
-    public Animal(Long id, String name, String color, String family) {
+    private @Id @GeneratedValue
+    Long id;
+    private String name;
+    private @Nullable String color;
+    private @Nullable String family;
+
+
+    public Animal(String name, String color, String family) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -47,7 +61,5 @@ public class Animal {
     public void setFamily(String family) {
         this.family = family;
     }
-
-    private String family;
 
 }

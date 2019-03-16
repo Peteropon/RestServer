@@ -3,10 +3,11 @@ package com.petros.restserver.service;
 import com.petros.restserver.model.Animal;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AnimalService {
 
-    Animal findById(Long id);
+    Optional<Animal> findById(Long id);
 
     void saveAnimal(Animal animal);
 
