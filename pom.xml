@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.petros</groupId>
     <artifactId>restserver</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.1.1-SNAPSHOT</version>
     <name>restserver</name>
     <description>Rest api for lab 2</description>
 
